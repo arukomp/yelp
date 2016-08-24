@@ -1,11 +1,12 @@
 <% if @restaurants.any? %>
   <% @restaurants.each do |restaurant| %>
-      <%= link_to restaurant.name, restaurant_path(restaurant) %>
-      <br>
+      <h1><%= link_to restaurant.name, restaurant_path(restaurant) %></h1>
+
         <p>
           <%= restaurant.description %>
         </p>
         <ul>
+          <h3>Reviews</h3>
           <% restaurant.reviews.all.each do |r| %>
             <li>
               <%= r.thoughts %>
