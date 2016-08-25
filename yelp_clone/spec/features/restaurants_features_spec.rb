@@ -1,6 +1,16 @@
 require 'rails_helper'
 
+
 feature 'restaurants' do
+
+  before do
+    visit '/users/sign_up'
+    fill_in 'Email', with: 'KFC@chicken.com'
+    fill_in 'Password', with: '123456'
+    fill_in 'Password confirmation', with: '123456'
+    click_button 'Sign up'
+  end
+
   context 'no restaurants have been added' do
     scenario 'should display a prompt to add restaurants' do
       visit '/restaurants'
@@ -22,6 +32,7 @@ feature 'restaurants' do
     end
 
     context 'creating restaurants' do
+
       scenario 'prompt user to fill out a form, then displays the new restaurant' do
         visit '/restaurants'
         click_link 'Add a restaurant'
@@ -82,6 +93,8 @@ feature 'restaurants' do
         expect(page).to have_content 'Restaurant deleted successfully'
       end
     end
+
+
 
 
 end
