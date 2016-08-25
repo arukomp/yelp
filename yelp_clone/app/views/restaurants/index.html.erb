@@ -11,7 +11,7 @@
           <% restaurant.reviews.all.each do |r| %>
             <li>
               <%= r.thoughts %>
-              <%= link_to 'Delete review', restaurant_review_path(restaurant, r), method: :delete %>
+              <%= link_to 'Delete review', review_path(r), method: :delete %>
             </li>
           <% end %>
         </ul>
