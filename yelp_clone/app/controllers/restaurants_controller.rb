@@ -27,20 +27,27 @@ class RestaurantsController < ApplicationController
 
   def edit
     @restaurant = Restaurant.find(params[:id])
+    if @restaurant.user != current_user
+      flash[:notice] = 'Cannot edit a restaurant you don\'t own'
+      redirect_to restaurants_path
+    end
   end
 
   def update
     @restaurant = Restaurant.find(params[:id])
     @restaurant.update(restaurant_params)
 
-    redirect_to '/restaurants'
+    redirect_to restaurants_path
   end
 
   def destroy
     @restaurant = Restaurant.find(params[:id])
-    @restaurant.destroy
-    flash[:notice] = 'Restaurant deleted successfully'
-    redirect_to '/restaurants'
+    if @restaurant.destroy_with_user(current_user)
+      flash[:notice] = 'Restaurant deleted successfully'
+    else
+      flash[:notice] = 'Cannot delete a restaurant you don\'t own'
+    end
+    redirect_to restaurants_path
   end
 
   private

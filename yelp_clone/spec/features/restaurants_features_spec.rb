@@ -3,6 +3,9 @@ require 'rails_helper'
 
 feature 'restaurants' do
 
+  let!(:user) { User.create email: 'test@example.com', password: 'something' }
+  let!(:second_user) { User.create email: 'anotherOne@gmail.com', password: 'password' }
+
   before do
     visit '/users/sign_up'
     fill_in 'Email', with: 'KFC@chicken.com'
@@ -68,9 +71,11 @@ feature 'restaurants' do
   end
 
   context 'editing restaurants' do
-    before { Restaurant.create name: 'KFC', description: 'Deep fried goodness' }
+    before { Restaurant.create name: 'KFC', description: 'Deep fried goodness', user: user }
 
     scenario 'let user edit a restaurant' do
+      sign_out
+      sign_in(email: 'test@example.com', password: 'something')
       visit '/restaurants'
       click_link 'Edit KFC'
       fill_in 'Name', with: 'Kentucky Fried Chicken'
@@ -80,21 +85,38 @@ feature 'restaurants' do
       expect(page).to have_content 'Deep fried goodness'
       expect(current_path).to eq '/restaurants'
     end
+
+    scenario 'cannot edit restaurant you don\'t own' do
+      sign_out
+      sign_in(email: 'anotherOne@gmail.com', password: 'password')
+      visit '/restaurants'
+      click_link 'Edit KFC'
+      expect(page).to have_content 'Cannot edit a restaurant you don\'t own'
+    end
   end
 
   context 'deleting restaurants' do
 
-    before { Restaurant.create name: 'KFC', description: 'Deep fried goodness' }
+    before { Restaurant.create name: 'KFC', description: 'Deep fried goodness', user: user }
 
     scenario 'removes a restaurant when a user clicks a delete link' do
+      sign_out
+      sign_in(email: 'test@example.com', password: 'something')
       visit '/restaurants'
       click_link 'Delete KFC'
       expect(page).not_to have_content 'KFC'
       expect(page).to have_content 'Restaurant deleted successfully'
     end
+
+    scenario 'does not allow deleting a different user\'s restaurant' do
+      sign_out
+      sign_in(email: 'anotherOne@gmail.com', password: 'password')
+      visit '/restaurants'
+      click_link 'Delete KFC'
+      expect(page).to have_content 'KFC'
+      expect(page).to have_content 'Cannot delete a restaurant you don\'t own'
+    end
+
   end
-
-
-
 
 end

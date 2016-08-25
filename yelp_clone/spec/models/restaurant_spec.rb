@@ -12,6 +12,13 @@ describe Restaurant, type: :model do
     expect(restaurant).to have(1).error_on(:name)
   end
 
+  it 'cannot delete a restaurant you don\'t own' do
+    user = User.create(email: 'hello@hello.com', password: 'something')
+    other_user = User.create(email: 'something@hello.com', password: 'password')
+    restaurant = Restaurant.create(name: 'KFC', user: user)
+    expect(restaurant.destroy_with_user(other_user)).to eq false
+  end
+
   describe 'reviews' do
     describe 'build_with_user' do
       let(:user) { User.create email: 'test@test.com' }
