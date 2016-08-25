@@ -13,6 +13,8 @@ feature 'reviewing' do
 
   context 'has a review' do
 
+    let!(:another_user) { User.create(email: 'mcdonalds@chicken.com', password: 'password') }
+
     before do
       visit '/restaurants'
       click_link 'Review KFC'
@@ -34,7 +36,12 @@ feature 'reviewing' do
     end
 
     scenario 'does not allow the user to delete other user\'s review' do
-      
+      sign_out
+      sign_in(email: 'mcdonalds@chicken.com', password: 'password')
+      visit '/restaurants'
+      click_link 'Delete review'
+      expect(page).to have_content 'Love chicken'
+      expect(page).to have_content 'Cannot delete someone else\'s review'
     end
 
   end
