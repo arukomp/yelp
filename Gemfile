@@ -44,7 +44,7 @@ group :development, :test do
   gem 'byebug'
   gem 'haml'
   gem 'dotenv-rails'
-  
+  gem 'shoulda-matchers'
 end
 
 group :development do
