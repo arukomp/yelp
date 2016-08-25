@@ -24,9 +24,10 @@ feature 'reviewing' do
     end
 
     scenario 'displays an average rating for all reviews' do
+      sign_out
+      sign_in(email: 'mcdonalds@chicken.com', password: 'password')
       leave_review('So so', '3')
-      leave_review('Great', '5')
-      expect(page).to have_content('Average rating: 4')
+      expect(page).to have_content('Average rating: ★★★★☆')
     end
 
     scenario 'allows users to leave a review using a form' do
