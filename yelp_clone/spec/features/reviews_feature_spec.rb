@@ -23,6 +23,12 @@ feature 'reviewing' do
       click_button 'Leave Review'
     end
 
+    scenario 'displays an average rating for all reviews' do
+      leave_review('So so', '3')
+      leave_review('Great', '5')
+      expect(page).to have_content('Average rating: 4')
+    end
+
     scenario 'allows users to leave a review using a form' do
       expect(page).to have_content('Love chicken')
       expect(current_path).to eq '/restaurants'
