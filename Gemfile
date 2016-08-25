@@ -31,6 +31,7 @@ gem 'devise'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+gem 'omniauth-facebook'
 
 group :test do
   gem 'rspec-rails'
@@ -43,6 +44,7 @@ group :development, :test do
   gem 'byebug'
   gem 'haml'
   gem 'dotenv-rails'
+  
 end
 
 group :development do
