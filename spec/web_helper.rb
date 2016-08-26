@@ -7,6 +7,10 @@ def sign_up(email: 'test@test.com', password: 'password123')
   click_button 'Sign up'
 end
 
+def sign_out
+  click_link 'Sign out'
+end
+
 def create_restaurant(name: 'KFC')
   visit '/'
   click_link 'Add a restaurant'
