@@ -10,21 +10,32 @@ class ReviewsController < ApplicationController
   end
 
   def create
-  @restaurant = Restaurant.find(params[:restaurant_id])
-  @review = @restaurant.reviews.build_with_user(review_params, current_user)
+    @restaurant = Restaurant.find(params[:restaurant_id])
+    @review = @restaurant.reviews.build_with_user(review_params, current_user)
 
-  if @review.save
-    redirect_to restaurants_path
-  else
-    if @review.errors[:user]
-      redirect_to restaurants_path, alert: 'You have already reviewed this restaurant'
+    if @review.save
+      redirect_to restaurants_path
     else
-      render :new
+      if @review.errors[:user]
+        redirect_to restaurants_path, alert: 'You have already reviewed this restaurant'
+      else
+        render :new
+      end
     end
   end
-end
 
-private
+  def destroy
+    @review = Review.find(params[:id])
+    if @review.user != current_user
+      flash[:notice] = 'Cannot delete someone else\'s review'
+    else
+      @review.destroy
+      flash[:notice] = 'Review deleted successfully'
+    end
+    redirect_to restaurants_path
+  end
+
+  private
 
   def review_params
     params.require(:review).permit(:thoughts, :rating)
