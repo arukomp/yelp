@@ -35,10 +35,7 @@ feature 'restaurants' do
 
     scenario 'prompts user to fill out a form, then display the new restaurant' do
       sign_up
-      visit '/'
-      click_link 'Add a restaurant'
-      fill_in 'Name', with: 'KFC'
-      click_button 'Create Restaurant'
+      create_restaurant
       expect(page).to have_content 'KFC'
       expect(current_path).to eq '/restaurants'
     end
@@ -68,10 +65,12 @@ feature 'restaurants' do
   end
 
   context 'editing restaurants' do
-    before { Restaurant.create name: 'KFC', description: 'Deep fried goodness' }
+    before do
+      sign_up
+      create_restaurant
+    end
 
     scenario 'let a user edit a restaurant' do
-      sign_up
       visit '/restaurants'
       click_link 'Edit KFC'
       fill_in 'Name', with: 'Kentucky Fried Chicken'
@@ -80,6 +79,13 @@ feature 'restaurants' do
       expect(page).to have_content 'Kentucky Fried Chicken'
       expect(page).to have_content 'Deep fried goodness'
       expect(current_path).to eq '/restaurants'
+    end
+
+    scenario 'user cannot edit someone else\'s restaurant' do
+      click_link 'Sign out'
+      sign_up(email: 'another@user.com')
+      click_link 'Edit KFC'
+      expect(page).to have_content 'Cannot edit someone else\'s restaurant'
     end
   end
 
